@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ResponseHelper;
 use App\Helpers\ServiceHelper;
 use Illuminate\Support\Facades\Log;
+use App\Models\Service;
 
 class ServiceController extends Controller
 {
@@ -49,5 +50,41 @@ class ServiceController extends Controller
         ], 500);
     }
 }
+public function update(Request $request, $id)
+{
+    try {
+        // Check if authenticated user is admin
+        if (auth()->user()->role !== 'admin') {
+            return ResponseHelper::error(
+                'You are not authorized to perform this action',
+                'unauthorized',
+                403
+            );
+        }
 
+        // Debug: Log all input
+        Log::info('All input:', $request->all());
+        Log::info('JSON input:', $request->json()->all());
+
+        // Find the service by ID
+        $service = Service::findOrFail($id);
+
+        // Update the service using helper
+        $updatedService = ServiceHelper::updateService($service, $request);
+
+        return ResponseHelper::success(
+            $updatedService,
+            'Service updated successfully',
+            'success',
+            200
+        );
+    } catch (\Exception $e) {
+        Log::error('Service update failed: ' . $e->getMessage() . ' - Line: ' . $e->getLine());
+
+        return response()->json([
+            'error' => $e->getMessage(),
+            'line' => $e->getLine()
+        ], 500);
+    }
+}
 }

@@ -25,5 +25,6 @@ Route::controller(AuthController::class)->group(function () {
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('create/service', [ServiceController::class, 'create']);
+    Route::post('update/service/{id}', [ServiceController::class, 'update']);
    
 });
