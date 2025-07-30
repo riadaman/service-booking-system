@@ -10,7 +10,7 @@ use App\Helper\ResponseHelper;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\LoginRequest;
 
@@ -83,6 +83,34 @@ class AuthController extends Controller
                  500
                 );
           }
+    }
+    public function userLogout(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            if ($user) {
+                $user->currentAccessToken()->delete();
+                return ResponseHelper::success(
+                    null,
+                    'User logged out successfully',
+                    'success',
+                    200
+                );
+            } else {
+                return ResponseHelper::error(
+                    'User not found',
+                    'error',
+                    404
+                );
+            }
+        } catch (\Exception $e) {
+            Log::error('User logout failed: ' . $e->getMessage() . '-Line: ' . $e->getLine());
+            return ResponseHelper::error(
+                'User logout failed',
+                'error',
+                500
+            );
+        }
     }
    
 }
