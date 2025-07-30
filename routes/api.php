@@ -27,13 +27,14 @@ Route::controller(AuthController::class)->group(function () {
 Route::middleware(['auth:sanctum'])->group(function () {
 
     //service routes
-    Route::post('create/service', [ServiceController::class, 'create']);
-    Route::post('update/service/{id}', [ServiceController::class, 'update']);
-    Route::delete('delete/service/{id}', [ServiceController::class, 'delete']);
+    Route::post('services', [ServiceController::class, 'create']);
+    Route::post('services/{id}', [ServiceController::class, 'update']);
+    Route::delete('services/{id}', [ServiceController::class, 'delete']);
     Route::get('services', [ServiceController::class, 'index']);
 
     //booking routes
-    Route::post('create/booking', [BookingController::class, 'createBooking']);
+    Route::post('bookings', [BookingController::class, 'createBooking']);
     Route::get('bookings', [BookingController::class, 'bookingList']);
+    Route::get('admin/bookings', [BookingController::class, 'allBookings']);// Assuming you have an admin middleware for this route
    
 });

@@ -43,6 +43,7 @@ class BookingController extends Controller
     public function bookingList()
     {
         try {
+            
             $bookings = BookingHelper::bookingList();
 
             if ($bookings->isEmpty()) {
@@ -61,6 +62,41 @@ class BookingController extends Controller
             );
         } catch (\Exception $e) {
             Log::error('Booking retrieval failed: ' . $e->getMessage() . ' - Line: ' . $e->getLine());
+
+            return response()->json([
+                'error' => $e->getMessage(),
+                'line' => $e->getLine()
+            ], 500);
+        }
+    }
+    public function allBookings()
+    {
+        try {
+             if (auth()->user()->role !== 'admin') {
+                return ResponseHelper::error(
+                    'You are not authorized to perform this action',
+                    'unauthorized',
+                    403
+                );
+            }
+            $bookings = BookingHelper::allBookings();
+
+            if ($bookings->isEmpty()) {
+                return ResponseHelper::error(
+                    'No bookings found',
+                    'error',
+                    404
+                );
+            }
+
+            return ResponseHelper::success(
+                $bookings,
+                'All bookings retrieved successfully',
+                'success',
+                200
+            );
+        } catch (\Exception $e) {
+            Log::error('All bookings retrieval failed: ' . $e->getMessage() . ' - Line: ' . $e->getLine());
 
             return response()->json([
                 'error' => $e->getMessage(),

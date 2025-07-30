@@ -22,5 +22,9 @@ class BookingHelper
     {
         return Booking::where('user_id', auth()->id())->get();
     }
+    public static function allBookings()
+    {
+        return Booking::all();
+    }
     
 }
