@@ -31,4 +31,11 @@ class ServiceHelper
 
         return $service;
     }
+
+    public static function deleteService($id)
+    {
+        $service = Service::findOrFail($id);
+        $service->delete();
+        return $service;
+    }
 }
