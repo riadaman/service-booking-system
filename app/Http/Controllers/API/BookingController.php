@@ -39,5 +39,33 @@ class BookingController extends Controller
                 'line' => $e->getLine()
             ], 500);
         }
-    }   
+    } 
+    public function bookingList()
+    {
+        try {
+            $bookings = BookingHelper::bookingList();
+
+            if ($bookings->isEmpty()) {
+                return ResponseHelper::error(
+                    'No bookings found',
+                    'error',
+                    404
+                );
+            }
+
+            return ResponseHelper::success(
+                $bookings,
+                'Bookings retrieved successfully',
+                'success',
+                200
+            );
+        } catch (\Exception $e) {
+            Log::error('Booking retrieval failed: ' . $e->getMessage() . ' - Line: ' . $e->getLine());
+
+            return response()->json([
+                'error' => $e->getMessage(),
+                'line' => $e->getLine()
+            ], 500);
+        }
+    }  
 }

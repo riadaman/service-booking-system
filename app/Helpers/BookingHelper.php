@@ -18,5 +18,9 @@ class BookingHelper
         ]);
         return $booking;
     }
+    public static function bookingList()
+    {
+        return Booking::where('user_id', auth()->id())->get();
+    }
     
 }
