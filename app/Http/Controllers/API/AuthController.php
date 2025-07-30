@@ -8,9 +8,11 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Helper\ResponseHelper;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 // use Illuminate\Http\Request;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\LoginRequest;
 
 class AuthController extends Controller
 {
@@ -48,6 +50,39 @@ class AuthController extends Controller
                 'line' => $e->getLine()
             ], 500);
         }
+    }
+     public function login(LoginRequest $request)
+    {
+       try{
+            if(!Auth::attempt(['email' => $request->email,'password' => $request->password,])){
+                return ResponseHelper::error(
+                    'Invalid credentials',
+                    'error',
+                    401
+                );
+            }
+            $user = Auth::user();
+            // dd($user);
+            // create a new token for the user
+            $token = $user->createToken('auth_token')->plainTextToken;
+            return ResponseHelper::success(
+                [
+                    'user' => $user,
+                    'token' => $token
+                ],
+                'User logged in successfully',
+                'success',
+                200
+            );
+       }
+         catch (\Exception $e) {
+                Log::error('User login failed: ' . $e->getMessage() . '-Line: ' . $e->getLine());
+                return ResponseHelper::error(
+                 'User login failed',
+                 'error',
+                 500
+                );
+          }
     }
    
 }
