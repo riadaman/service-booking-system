@@ -38,4 +38,8 @@ class ServiceHelper
         $service->delete();
         return $service;
     }
+   public static function getAllServices($perPage = 10)
+    {
+        return Service::paginate($perPage);
+    }
 }

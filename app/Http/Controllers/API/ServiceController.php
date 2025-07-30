@@ -13,6 +13,28 @@ use App\Models\Service;
 class ServiceController extends Controller
 {
     
+    public function index(Request $request)
+    {
+        try {
+            
+            $limit = $request->query('limit', 10);
+            $services = ServiceHelper::getAllServices($limit);
+
+            return ResponseHelper::success(
+                $services,
+                'Services retrieved successfully',
+                'success',
+                200
+            );
+        } catch (\Exception $e) {
+            Log::error('Service retrieval failed: ' . $e->getMessage() . ' - Line: ' . $e->getLine());
+
+            return response()->json([
+                'error' => $e->getMessage(),
+                'line' => $e->getLine()
+            ], 500);
+        }
+    }
    public function create(ServiceRequest $request)
     {
         try {
@@ -119,4 +141,5 @@ class ServiceController extends Controller
             ], 500);
         }
     }
+    
 }

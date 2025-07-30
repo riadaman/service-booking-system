@@ -27,5 +27,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('create/service', [ServiceController::class, 'create']);
     Route::post('update/service/{id}', [ServiceController::class, 'update']);
     Route::delete('delete/service/{id}', [ServiceController::class, 'delete']);
+    Route::get('services', [ServiceController::class, 'index']);
    
 });
