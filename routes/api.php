@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\API\ServiceController;
+use App\Http\Controllers\API\BookingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,9 +25,14 @@ Route::controller(AuthController::class)->group(function () {
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
+
+    //service routes
     Route::post('create/service', [ServiceController::class, 'create']);
     Route::post('update/service/{id}', [ServiceController::class, 'update']);
     Route::delete('delete/service/{id}', [ServiceController::class, 'delete']);
     Route::get('services', [ServiceController::class, 'index']);
+
+    //booking routes
+    Route::post('create/booking', [BookingController::class, 'createBooking']);
    
 });
