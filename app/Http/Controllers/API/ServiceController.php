@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\ServiceRequest;
+use Illuminate\Http\Request;
+use App\Helpers\ResponseHelper;
+use App\Helpers\ServiceHelper;
+use Illuminate\Support\Facades\Log;
+
+class ServiceController extends Controller
+{
+   public function create(ServiceRequest $request)
+{
+    try {
+        // Check if authenticated user is admin
+        if (auth()->user()->role !== 'admin') {
+            return ResponseHelper::error(
+                'You are not authorized to perform this action',
+                'unauthorized',
+                403
+            );
+        }
+
+        // Store the service using helper
+        $service = ServiceHelper::storeService($request);
+
+        if ($service) {
+            return ResponseHelper::success(
+                $service,
+                'Service added successfully',
+                'success',
+                201
+            );
+        }
+
+        return ResponseHelper::error(
+            'Failed to add service',
+            'error',
+            400
+        );
+    } catch (\Exception $e) {
+        Log::error('Service addition failed: ' . $e->getMessage() . ' - Line: ' . $e->getLine());
+
+        return response()->json([
+            'error' => $e->getMessage(),
+            'line' => $e->getLine()
+        ], 500);
+    }
+}
+
+}
